@@ -52,7 +52,14 @@ function ShopCatalog({ products }: ShopCatalogProps) {
     <section className="lg:col-span-9">
       <div className="rounded-[1.25rem] border border-slate-200 bg-slate-50/50 p-5 shadow-sm backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:shadow-xl">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-xl font-bold tracking-tight text-slate-900">Recommended for you</h1>
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900">
+              Recommended for you
+            </h1>
+            <span aria-live="polite" className="text-sm text-slate-500">
+              {products.length} {products.length === 1 ? 'product' : 'products'}
+            </span>
+          </div>
           <label className="inline-flex items-center gap-2 text-sm text-slate-600">
             <span className="hidden sm:inline">Sort by:</span>
             <div className="relative">
