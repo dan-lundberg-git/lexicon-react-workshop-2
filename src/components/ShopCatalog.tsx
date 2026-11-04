@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 
-import ProductCard, { type Product } from './ProductCard'
+import type { Product } from '../products'
+import ProductCard from './ProductCard'
 
 type ShopCatalogProps = {
   products: Product[]
@@ -77,11 +78,15 @@ function ShopCatalog({ products }: ShopCatalogProps) {
           id="product-grid"
           className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {products.map((product) => (
-            <ProductCard key={product.name} product={product} />
-          ))}
+          {products.length > 0 ? (
+            products.map((product) => <ProductCard key={product.name} product={product} />)
+          ) : (
+            <p className="col-span-full py-12 text-center text-sm text-slate-500">
+              No products match your filters.
+            </p>
+          )}
         </div>
-        <Pagination />
+        {products.length > 0 && <Pagination />}
       </div>
     </section>
   )

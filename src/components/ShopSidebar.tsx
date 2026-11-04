@@ -1,13 +1,16 @@
 import { ChevronDown } from 'lucide-react'
+import type { Product, ProductFilters } from '../products'
 
-const categories = [
-  { name: 'All Products', count: 124, value: 'all' },
-  { name: 'Outerwear', count: 42, value: 'Outerwear' },
-  { name: 'Footwear', count: 18, value: 'Footwear' },
-  { name: 'Accessories', count: 64, value: 'Accessories' },
-]
+type ShopSidebarProps = {
+  products: Product[]
+  filters: ProductFilters
+  onFiltersChange: (filters: ProductFilters) => void
+}
 
-function ShopSidebar() {
+function ShopSidebar({ products, filters, onFiltersChange }: ShopSidebarProps) {
+  const categoryOptions = [...new Set(products.map((product) => product.category))]
+  const allCategoriesSelected = filters.categories.length === 0
+
   return (
     <aside className="self-start lg:sticky lg:top-20 lg:col-span-3">
       <div className="rounded-[1.25rem] border border-slate-200 bg-slate-50/50 p-5 shadow-sm backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:shadow-xl">
@@ -26,7 +29,14 @@ function ShopSidebar() {
           </div>
 
           <div className="space-y-3">
-            {categories.map((category, index) => (
+            {[
+              { name: 'All Products', value: 'all', count: products.length },
+              ...categoryOptions.map((value) => ({
+                name: value,
+                value,
+                count: products.filter((product) => product.category === value).length,
+              })),
+            ].map((category) => (
               <label
                 key={category.value}
                 className="flex cursor-pointer items-center gap-3 select-none"
@@ -35,7 +45,22 @@ function ShopSidebar() {
                   type="checkbox"
                   value={category.value}
                   className="category-filter h-4.5 w-4.5 cursor-pointer rounded-md border border-slate-200 accent-blue-600"
-                  defaultChecked={index === 0}
+                  checked={
+                    category.value === 'all'
+                      ? allCategoriesSelected
+                      : filters.categories.includes(category.value)
+                  }
+                  onChange={(event) => {
+                    if (category.value === 'all') {
+                      onFiltersChange({ ...filters, categories: [] })
+                      return
+                    }
+
+                    const selectedCategories = event.target.checked
+                      ? [...filters.categories, category.value]
+                      : filters.categories.filter((value) => value !== category.value)
+                    onFiltersChange({ ...filters, categories: selectedCategories })
+                  }}
                 />
                 <span className="flex-1 text-sm text-slate-700">
                   {category.name}{' '}
@@ -54,13 +79,16 @@ function ShopSidebar() {
           </h2>
           <div className="flex items-center justify-between text-xs text-slate-500">
             <span>0 kr</span>
-            <span>1800 kr</span>
+            <span>{filters.maxPrice} kr</span>
           </div>
           <input
             type="range"
             min="0"
-            max="1800"
-            defaultValue="900"
+            max="2200"
+            value={filters.maxPrice}
+            onChange={(event) =>
+              onFiltersChange({ ...filters, maxPrice: Number(event.target.value) })
+            }
             className="w-full accent-blue-500"
             aria-label="Price range"
           />
@@ -73,11 +101,18 @@ function ShopSidebar() {
             Availability
           </h2>
           <div className="space-y-3">
-            {['In Stock', 'On Sale'].map((label) => (
+            {[
+              { label: 'In Stock', key: 'inStockOnly' as const },
+              { label: 'On Sale', key: 'onSaleOnly' as const },
+            ].map(({ label, key }) => (
               <label key={label} className="flex cursor-pointer items-center gap-3 select-none">
                 <input
                   type="checkbox"
                   className="h-4.5 w-4.5 cursor-pointer rounded-md border border-slate-200 accent-blue-600"
+                  checked={filters[key]}
+                  onChange={(event) =>
+                    onFiltersChange({ ...filters, [key]: event.target.checked })
+                  }
                 />
                 <span className="flex-1 text-sm text-slate-700">{label}</span>
               </label>

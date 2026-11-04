@@ -1,18 +1,5 @@
 import { Eye, Heart, Plus, Star } from 'lucide-react'
-
-export type Product = {
-  name: string
-  category: string
-  image: string
-  badge: string
-  badgeClassName: string
-  rating: string
-  availability: string
-  availabilityClassName: string
-  price: string
-  originalPrice?: string
-  soldOut?: boolean
-}
+import type { Product } from '../products'
 
 type ProductCardProps = {
   product: Product
@@ -30,8 +17,8 @@ function ProductCard({ product }: ProductCardProps) {
     availabilityClassName,
     price,
     originalPrice,
-    soldOut = false,
   } = product
+  const soldOut = !product.inStock
 
   return (
     <article className="group rounded-[1.25rem] border border-slate-200 bg-white p-3 transition-all duration-400 hover:-translate-y-1.5 hover:border-blue-400 hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.08)]">
