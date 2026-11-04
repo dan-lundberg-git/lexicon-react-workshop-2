@@ -2,7 +2,12 @@ import { Box, Menu, Search, ShoppingBag, UserRound } from 'lucide-react'
 
 const navigationLinks = ['New Arrival', 'Men', 'Women', 'Sale']
 
-function ShopHeader() {
+type ShopHeaderProps = {
+  searchQuery: string
+  onSearchChange: (query: string) => void
+}
+
+function ShopHeader({ searchQuery, onSearchChange }: ShopHeaderProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-blue-700/30 bg-blue-600 shadow-lg shadow-blue-900/10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -42,6 +47,9 @@ function ShopHeader() {
                 id="search-input"
                 type="text"
                 placeholder="Search products..."
+                aria-label="Search products by name"
+                value={searchQuery}
+                onChange={(event) => onSearchChange(event.target.value)}
                 className="h-10 w-48 rounded-xl border border-blue-400/20 bg-blue-500/30 pr-4 pl-10 text-xs font-medium text-blue-50 transition-all duration-300 outline-none placeholder:text-blue-200/50 focus:w-64 focus:bg-blue-500/50"
               />
               <Search

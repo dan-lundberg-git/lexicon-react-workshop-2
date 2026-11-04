@@ -6,6 +6,7 @@ import ShopSidebar from './components/ShopSidebar'
 import { products, type ProductFilters } from './products'
 
 function App() {
+  const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState<ProductFilters>({
     categories: [],
     maxPrice: 2200,
@@ -15,6 +16,7 @@ function App() {
 
   const filteredProducts = products.filter(
     (product) =>
+      product.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
       (filters.categories.length === 0 || filters.categories.includes(product.category)) &&
       product.priceAmount <= filters.maxPrice &&
       (!filters.inStockOnly || product.inStock) &&
@@ -23,7 +25,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-100/30 font-sans text-slate-950 antialiased">
-      <ShopHeader />
+      <ShopHeader searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <ShopSidebar products={products} filters={filters} onFiltersChange={setFilters} />
